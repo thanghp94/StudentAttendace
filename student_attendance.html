@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Student Attendance</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; }
+    .container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 20px; }
+    .student-box {
+      padding: 10px 15px;
+      border-radius: 10px;
+      background-color: #4CAF50;
+      color: white;
+      font-weight: bold;
+      text-transform: uppercase;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    }
+  </style>
+  <script>
+    function fetchStudents() {
+      fetch("https://api.appsheet.com/api/v2/tables/SessionAttendance/records?application=beca880b-b15d-4878-9a25-e397710880d4&apikey=V2-SrlSs-GnF0S-uvGow-eelQQ-AbNFA-g5jNn-7NkCc-qDjc3")
+        .then(response => response.json())
+        .then(data => {
+          let container = document.getElementById("student-list");
+          container.innerHTML = ""; // Clear previous data
+
+          data.records.forEach(student => {
+            let div = document.createElement("div");
+            div.className = "student-box";
+            div.textContent = student.StudentName; // Use the correct column name from your AppSheet table
+            container.appendChild(div);
+          });
+        })
+        .catch(error => console.error("Error fetching students:", error));
+    }
+
+    setInterval(fetchStudents, 5000); // Refresh every 5 seconds
+    window.onload = fetchStudents;
+  </script>
+</head>
+<body>
+  <h1>Live Student Attendance</h1>
+  <div class="container" id="student-list"></div>
+</body>
+</html>
